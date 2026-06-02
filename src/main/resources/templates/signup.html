@@ -52,5 +52,9 @@
         </div>
     </div>
 </div>
+<footer class="text-center py-2 text-muted small">
+  <p th:text="${'실습 수행: ' + #temporals.format(#temporals.createNow(), 'yyyy-MM-dd HH:mm:ss')}"></p>
+  <p>학번: 2191276  │  성명: 이재혁</p>
+</footer>
 </body>
 </html>
