@@ -8,6 +8,7 @@ import kr.ac.hansung.repository.RoleRepository;
 import kr.ac.hansung.repository.UserRepository;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -23,12 +24,14 @@ public class DataInitializer implements ApplicationRunner {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final ProductRepository productRepository;
+    private final JdbcTemplate jdbcTemplate;
 
-    public DataInitializer(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, ProductRepository productRepository) {
+    public DataInitializer(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, ProductRepository productRepository, JdbcTemplate jdbcTemplate) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.productRepository = productRepository;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
@@ -49,8 +52,11 @@ public class DataInitializer implements ApplicationRunner {
             log.info("초기 관리자 계정 생성: admin@hansung.ac.kr / admin1234");
         }
 
-        // 기존 상품 삭제 후 20개 강제 생성 (요구사항 충족 확인용)
+        // 기존 상품 삭제
         productRepository.deleteAll();
+
+        // ID(Auto Increment)를 1로 초기화 (MySQL 기준)
+        jdbcTemplate.execute("ALTER TABLE products AUTO_INCREMENT = 1");
 
         // --- 기술 서적 10종 ---
         productRepository.save(new Product("Spring Boot 4 완벽 가이드", 35000,

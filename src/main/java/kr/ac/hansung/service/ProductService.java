@@ -13,10 +13,13 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
-@RequiredArgsConstructor
 public class ProductService {
 
     private final ProductRepository productRepository;
+
+    public ProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
 
     @Transactional(readOnly = true)
     public List<Product> findAll() {
@@ -46,4 +49,10 @@ public class ProductService {
     public Page<Product> getProducts(Pageable pageable) {
         return productRepository.findAll(pageable);
     }
+
+    // 키워드 검색 + 페이징
+public Page<Product> searchProducts(String keyword, Pageable pageable) {
+return productRepository.findByNameContaining(keyword, pageable);
+}
+
 }
