@@ -53,8 +53,7 @@
     </div>
 </div>
 <footer class="text-center py-2 text-muted small">
-  <p th:text="${'실습 수행: ' + #temporals.format(#temporals.createNow(), 'yyyy-MM-dd HH:mm:ss')}"></p>
-  <p>학번: 2191276  │  성명: 이재혁</p>
+  <p th:text="${'작성자 : 이재혁 2191276 | 일시 : ' + #temporals.format(#temporals.createNow(), 'yyyy-MM-dd HH:mm:ss')}"></p>
 </footer>
 </body>
 </html>
