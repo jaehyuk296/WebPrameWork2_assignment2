@@ -2,18 +2,15 @@ package kr.ac.hansung.controller;
 
 import kr.ac.hansung.dto.ProductDto;
 import kr.ac.hansung.service.ProductService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-
 import org.springframework.data.domain.PageRequest;
-
 import org.springframework.data.domain.Sort;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
 import kr.ac.hansung.entity.Product;
+import jakarta.validation.Valid;
+import org.springframework.validation.BindingResult;
 
 @Controller
 @RequestMapping("/products")
@@ -25,29 +22,25 @@ public class ProductController {
         this.productService = productService;
     }
 
-  @GetMapping
-
-public String list(
-@RequestParam(required = false) String keyword,
-@RequestParam(defaultValue = "0") int page,
-@RequestParam(defaultValue = "5") int size,
-Model model) {
-// URL 파라미터(page, size)로 페이지 요청 객체 생성, id 순 정렬
-PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id"));
-// 빈 문자열("")을 null로 정규화 → Thymeleaf URL에 keyword 파라미터 미포함
-String normalizedKeyword = (keyword != null && !keyword.isBlank()) ? keyword : null;
-Page<Product> productPage;
-if (normalizedKeyword != null) {
-// 검색어가 있으면 키워드로 검색
-productPage = productService.searchProducts(normalizedKeyword, pageRequest);
-} else {
-// 검색어가 없으면 전체 목록 조회
-productPage = productService.getProducts(pageRequest);
-}
-model.addAttribute("productPage", productPage);
-model.addAttribute("keyword", normalizedKeyword);
-return "products/list";
-}
+    @GetMapping
+    public String list(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            Model model) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id"));
+        Page<Product> productPage;
+        
+        if (keyword != null && !keyword.isBlank()) {
+            productPage = productService.searchProducts(keyword, pageRequest);
+        } else {
+            productPage = productService.getProducts(pageRequest);
+        }
+        
+        model.addAttribute("productPage", productPage);
+        model.addAttribute("keyword", keyword);
+        return "products/list";
+    }
 
     @GetMapping("/{id}")
     public String detail(@PathVariable Long id, Model model) {
@@ -65,6 +58,29 @@ return "products/list";
     public String save(@ModelAttribute ProductDto dto) {
         productService.save(dto);
         return "redirect:/products";
+    }
+
+    @GetMapping("/{id}/edit")
+    public String editForm(@PathVariable Long id, Model model) {
+        Product product = productService.findById(id);
+        ProductDto dto = new ProductDto();
+        dto.setName(product.getName());
+        dto.setPrice(product.getPrice());
+        dto.setDescription(product.getDescription());
+        dto.setStock(product.getStock());
+        model.addAttribute("product", dto);
+        return "products/edit";
+    }
+
+    @PostMapping("/{id}/edit")
+    public String update(@PathVariable Long id, 
+                         @ModelAttribute("product") @Valid ProductDto dto, 
+                         BindingResult result) {
+        if (result.hasErrors()) {
+            return "products/edit";
+        }
+        productService.updateProduct(id, dto);
+        return "redirect:/products/" + id;
     }
 
     @PostMapping("/{id}/delete")

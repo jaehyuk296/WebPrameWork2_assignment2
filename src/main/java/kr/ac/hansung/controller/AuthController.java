@@ -2,7 +2,6 @@ package kr.ac.hansung.controller;
 
 import kr.ac.hansung.dto.UserDto;
 import kr.ac.hansung.service.UserService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,5 +36,10 @@ public class AuthController {
         }
         userService.signup(dto);
         return "redirect:/login?registered";
+    }
+
+    @GetMapping("/access-denied")
+    public String accessDenied() {
+        return "access-denied";
     }
 }

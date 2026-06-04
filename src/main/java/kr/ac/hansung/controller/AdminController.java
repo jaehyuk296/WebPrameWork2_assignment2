@@ -22,7 +22,6 @@ public class AdminController {
 
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
-        model.addAttribute("pageTitle", "관리자 대시보드");
         model.addAttribute("userCount", userRepository.count());
         model.addAttribute("productCount", productRepository.count());
         model.addAttribute("outOfStockCount", productRepository.countByStock(0));
