@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import kr.ac.hansung.entity.Product;
 import jakarta.validation.Valid;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/products")
@@ -61,26 +62,33 @@ public class ProductController {
     }
 
     @GetMapping("/{id}/edit")
-    public String editForm(@PathVariable Long id, Model model) {
+    public String editProductForm(@PathVariable Long id, Model model) {
         Product product = productService.findById(id);
+        // 기존 데이터를 DTO에 담아 폼에 pre-fill
         ProductDto dto = new ProductDto();
         dto.setName(product.getName());
         dto.setPrice(product.getPrice());
-        dto.setDescription(product.getDescription());
         dto.setStock(product.getStock());
-        model.addAttribute("product", dto);
+        dto.setDescription(product.getDescription());
+        
+        model.addAttribute("productDto", dto);
+        model.addAttribute("productId", id);
         return "products/edit";
     }
 
     @PostMapping("/{id}/edit")
-    public String update(@PathVariable Long id, 
-                         @ModelAttribute("product") @Valid ProductDto dto, 
-                         BindingResult result) {
-        if (result.hasErrors()) {
+    public String editProduct(@PathVariable Long id, 
+                             @Valid @ModelAttribute("productDto") ProductDto productDto, 
+                             BindingResult bindingResult,
+                             Model model,
+                             RedirectAttributes ra) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("productId", id);
             return "products/edit";
         }
-        productService.updateProduct(id, dto);
-        return "redirect:/products/" + id;
+        productService.updateProduct(id, productDto);
+        ra.addFlashAttribute("successMessage", "상품이 수정되었습니다.");
+        return "redirect:/products";
     }
 
     @PostMapping("/{id}/delete")
