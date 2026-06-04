@@ -49,10 +49,10 @@ public class DataInitializer implements ApplicationRunner {
             admin.getRoles().add(userRole);
             admin.getRoles().add(adminRole);
             userRepository.save(admin);
-            log.info("초기 관리자 계정 생성: admin@hansung.ac.kr / admin1234");
-        }
+            }
 
-        // 기존 상품 삭제
+            // 기존 상품 삭제 후 20개 강제 생성 (요구사항 충족 확인용)
+
         productRepository.deleteAll();
 
         // ID(Auto Increment)를 1로 초기화 (MySQL 기준)
