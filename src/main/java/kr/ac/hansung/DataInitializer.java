@@ -51,11 +51,9 @@ public class DataInitializer implements ApplicationRunner {
             userRepository.save(admin);
             }
 
-            // 기존 상품 삭제 후 20개 강제 생성 (요구사항 충족 확인용)
 
         productRepository.deleteAll();
 
-        // ID(Auto Increment)를 1로 초기화 (MySQL 기준)
         jdbcTemplate.execute("ALTER TABLE products AUTO_INCREMENT = 1");
 
         // --- 기술 서적 10종 ---
