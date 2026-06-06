@@ -64,7 +64,6 @@ public class ProductController {
     @GetMapping("/{id}/edit")
     public String editProductForm(@PathVariable Long id, Model model) {
         Product product = productService.findById(id);
-        // 기존 데이터를 DTO에 담아 폼에 pre-fill
         ProductDto dto = new ProductDto();
         dto.setName(product.getName());
         dto.setPrice(product.getPrice());
