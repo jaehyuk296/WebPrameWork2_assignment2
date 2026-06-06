@@ -1,11 +1,7 @@
 package kr.ac.hansung.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@NoArgsConstructor
 @Entity
 @Table(name = "roles")
 public class Role {

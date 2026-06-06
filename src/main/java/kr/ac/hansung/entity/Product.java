@@ -1,13 +1,8 @@
 package kr.ac.hansung.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import java.time.LocalDateTime;
 
-@NoArgsConstructor
 @Entity
 @Table(name = "products")
 public class Product {
